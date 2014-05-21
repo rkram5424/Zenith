@@ -1,0 +1,48 @@
+<default>
+	<input>
+		<ip_address>
+			127.0.0.1
+		</ip_address>
+		<port>
+			3000
+		</port>
+		<format>
+			"<MAPMSG><ADDRESS>%addr%</ADDRESS><CITY>%city%</CITY><POSTAL_CODE>%pcode%</POSTAL_CODE><STATE>%state%</STATE><COUNTRY>%ctry%</COUNTRY><LATITUDE>%lat%</LATITUDE><LONGITUDE>%long%</LONGITUDE>></MAPMSG>"
+		</format>
+	</input>
+	<output>
+		<ip_address>
+			127.0.0.1
+		</ip_address>
+		<port>
+			3000
+		</port>
+		<format>
+			"<MAPMSG><ADDRESS>%addr%</ADDRESS><ADDRESS2>%addr2%</ADDRESS2><CITY>%city%</CITY><POSTAL_CODE>%pcode%</POSTAL_CODE><STATE>%state%</STATE><COUNTRY>%ctry%</COUNTRY><LATITUDE>%lat%</LATITUDE><LONGITUDE>%long%</LONGITUDE>></MAPMSG>"
+		</format>
+	</output>
+</default>
+<user>
+	<input>
+		<ip_address>
+			127.0.0.1
+		</ip_address>
+		<port>
+			3000
+		</port>
+		<format>
+			"<MAPMSG><ADDRESS>%addr%</ADDRESS><CITY>%city%</CITY><POSTAL_CODE>%pcode%</POSTAL_CODE><STATE>%state%</STATE><COUNTRY>%ctry%</COUNTRY><LATITUDE>%lat%</LATITUDE><LONGITUDE>%long%</LONGITUDE>></MAPMSG>"
+		</format>
+	</input>
+	<output>
+		<ip_address>
+			127.0.0.1
+		</ip_address>
+		<port>
+			3000
+		</port>
+		<format>
+			"<MAPMSG><ADDRESS>%addr%</ADDRESS><ADDRESS2>%addr2%</ADDRESS2><CITY>%city%</CITY><POSTAL_CODE>%pcode%</POSTAL_CODE><STATE>%state%</STATE><COUNTRY>%ctry%</COUNTRY><LATITUDE>%lat%</LATITUDE><LONGITUDE>%long%</LONGITUDE>></MAPMSG>"
+		</format>
+	</output>
+</user>
