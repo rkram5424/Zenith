@@ -8,130 +8,86 @@ from kivy.uix.label import Label
 from kivy.uix.screenmanager import ScreenManager, Screen, FadeTransition
 from kivy.uix.textinput import TextInput
 import xml.etree.ElementTree as ET
+import os
 import urllib
 
 Builder.load_string("""
 #:kivy 1.8.0
 <MainScreen>:
 	BoxLayout:
-		orientation: 'horizontal'
+		spacing: 20
+		orientation: 'vertical'
 		BoxLayout:
-			size_hint_x: 0.4
-			orientation: 'vertical'
-			Label:
-				size_hint_y: 0.1
-				text: 'Input'
-				bold: True
+			size_hint_y: 0.3
+			orientation: 'horizontal'
 			BoxLayout:
 				orientation: 'horizontal'
-				size_hint_y: 0.67
 				BoxLayout:
+					size_hint_x: 0.4
 					orientation: 'vertical'
 					Label:
-						text: 'Street Address'
+						text: 'Address'
+					Label:
+						text: 'Address2'
 					Label:
 						text: 'City'
 					Label:
-						text: 'State'
-					Label:
 						text: 'Postal Code'
 					Label:
+						text: 'State'
+					Label:
 						text: 'Country'
+				BoxLayout:
+					orientation: 'vertical'
+					TextInput:
+						id: out_addr
+					TextInput:
+						id: out_addr2
+					TextInput:
+						id: out_city
+					TextInput:
+						id: out_pcode
+					TextInput:
+						id: out_state
+					TextInput:
+						id: out_ctry
+				BoxLayout:
+					size_hint_x: 0.4
+					orientation: 'vertical'
 					Label:
 						text: 'Latitude'
 					Label:
 						text: 'Longitude'
+					Label:
+						text: ''
+					Label:
+						text: ''
+					Label:
+						text: ''
+					Label:
+						text: ''
 				BoxLayout:
 					orientation: 'vertical'
 					TextInput:
-						id: in_street
+						id: out_lat
 					TextInput:
-						id: in_city
-					TextInput:
-						id: in_state
-					TextInput:
-						id: in_pcode
-					TextInput:
-						id: in_ctry
-					TextInput:
-						id: in_lat
-					TextInput:
-						id: in_long
-			Button:
-				size_hint_y: 0.15
-				text: 'Find'
-				on_press: root.get_results()
-			Label:
-				size_hint_y: 0.1
-				text: 'Results: '
-			ScrollView: 
+						id: out_long
+					Button:
+						size_hint_y: 3
+						text: 'Map Address'
 				BoxLayout:
-					id: result_list
 					orientation: 'vertical'
-		BoxLayout:
-			orientation: 'vertical'
-			Label:
-				size_hint_y: 0.06
-				text: 'Output'
-				bold: True
-			BoxLayout:
-				orientation: 'horizontal'
-				size_hint_y: 0.25
-				BoxLayout:
-					orientation: 'horizontal'
-					BoxLayout:
-						orientation: 'vertical'
-						size_hint_x: 0.5
-						Label:
-							text: 'Address'
-						Label:
-							text: 'Address2'
-						Label:
-							text: 'City'
-						Label:
-							text: 'Postal Code'
-					BoxLayout:
-						orientation: 'vertical'
-						TextInput:
-							id: out_addr
-						TextInput:
-							id: out_addr2
-						TextInput:
-							id: out_city
-						TextInput:
-							id: out_pcode
-					BoxLayout:
-						orientation: 'vertical'
-						size_hint_x: 0.5
-						Label:
-							text: 'State'
-						Label:
-							text: 'Country'
-						Label:
-							text: 'Latitude'
-						Label:
-							text: 'Longitude'
-					BoxLayout:
-						orientation: 'vertical'
-						TextInput:
-							id: out_state
-						TextInput:
-							id: out_ctry
-						TextInput:
-							id: out_lat
-						TextInput:
-							id: out_long
-				BoxLayout:
-
-					orientation: 'vertical'
-					size_hint_x: 0.2
-					Button: 
+					Button:
 						text: 'Options'
-						on_press: root.manager.current = 'options'
 					Button:
 						text: 'Send'
-						on_press: root.send_button()
-			Button:
+		BoxLayout:
+			orientation: 'horizontal'
+			BoxLayout:
+				Label:
+					text: ''
+			Button:  
+				size_hint_x: 3
 				text: 'Map'
 
 <OptionsScreen>:
@@ -160,6 +116,7 @@ Builder.load_string("""
 						size_hint_y: 0.1
 						text: 'Message Format:'
 					TextInput:
+						id: in_format
 						multiline: True
 					BoxLayout:
 						orientation: 'vertical'
@@ -274,15 +231,12 @@ class MainScreen(Screen):
 		print send_msg
 
 class OptionsScreen(Screen):
-	pass
+	def settings(self):
+		f = file('settings.xml', 'r+')
+		#self.ids.in_format.text = 
 
-settings_file = """
-
-<default>
+settings_file = """<default>
 	<input>
-		<ip_address>
-			127.0.0.1
-		</ip_address>
 		<port>
 			3000
 		</port>
@@ -301,12 +255,14 @@ settings_file = """
 			"<MAPMSG><ADDRESS>%addr%</ADDRESS><ADDRESS2>%addr2%</ADDRESS2><CITY>%city%</CITY><POSTAL_CODE>%pcode%</POSTAL_CODE><STATE>%state%</STATE><COUNTRY>%ctry%</COUNTRY><LATITUDE>%lat%</LATITUDE><LONGITUDE>%long%</LONGITUDE>></MAPMSG>"
 		</format>
 	</output>
+	<flags>
+		<listen>
+			0
+		</listen>
+	</flags>
 </default>
 <user>
 	<input>
-		<ip_address>
-			127.0.0.1
-		</ip_address>
 		<port>
 			3000
 		</port>
@@ -325,16 +281,24 @@ settings_file = """
 			"<MAPMSG><ADDRESS>%addr%</ADDRESS><ADDRESS2>%addr2%</ADDRESS2><CITY>%city%</CITY><POSTAL_CODE>%pcode%</POSTAL_CODE><STATE>%state%</STATE><COUNTRY>%ctry%</COUNTRY><LATITUDE>%lat%</LATITUDE><LONGITUDE>%long%</LONGITUDE>></MAPMSG>"
 		</format>
 	</output>
+	<flags>
+		<listen>
+			0
+		</listen>
+	</flags>
 </user>
-
 """
 
 sm = ScreenManager(transition = FadeTransition())
-sm.add_widget(MainScreen(name='main'))
-sm.add_widget(OptionsScreen(name='options'))
+sm.add_widget(MainScreen(name = 'main'))
+sm.add_widget(OptionsScreen(name ='options'))
 
 class ZenithApp(App):
 	def build(self):
+		if not(os.path.isfile("settings.xml")):
+			f = file("settings.xml", "w")
+			f.write(settings_file)
+			f.close()
 		return sm
 	
 if __name__ == '__main__':
